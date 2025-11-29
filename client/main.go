@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"log"
 	"time"
 
@@ -12,18 +11,18 @@ import (
 )
 
 func main() {
-	name := flag.String("name", "world", "Name to great")
-	flag.Parse()
 	conn, err := grpc.NewClient(
 		"localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	defer conn.Close()
-	c := pb.NewHelloWorldClient(conn)
+	c := pb.NewCalculatorClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-
-	r, err := c.SayHello(ctx, &pb.HelloRequest{
-		Name: *name,
+	var  num1 float64 = 1
+	var  num2 float64 = 1
+	r, err := c.Add(ctx, &pb.CalcutorRequest{
+		Num1: num1,
+		Num2: num2,
 	})
 
 	defer cancel()
@@ -32,6 +31,5 @@ func main() {
 		log.Fatalf("Could not connect to gRPC server %v", err)
 	}
 
-	log.Printf("Hello %s", r.GetMessage())
-
+	log.Printf("Sum of %f and %f is: %f", num1, num2, r.GetResult())
 }
