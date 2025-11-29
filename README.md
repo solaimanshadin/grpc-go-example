@@ -1,6 +1,6 @@
 # Go gRPC Example
 
-A simple gRPC client-server implementation in Go demonstrating a basic "Hello World" service.
+A simple gRPC client-server implementation in Go demonstrating a Calculator service.
 
 ## Project Structure
 
@@ -9,22 +9,22 @@ A simple gRPC client-server implementation in Go demonstrating a basic "Hello Wo
 ├── server/          # gRPC server implementation
 │   ├── main.go
 │   └── pb/          # Protocol buffer definitions and generated code
-│       ├── helloworld.proto
-│       ├── helloworld.pb.go
-│       └── helloworld_grpc.pb.go
+│       ├── calculator.proto
+│       ├── calculator.pb.go
+│       └── calculator_grpc.pb.go
 └── client/          # gRPC client implementation
     ├── main.go
     └── pb/          # Protocol buffer definitions and generated code
-        ├── helloworld.proto
-        ├── helloworld.pb.go
-        └── helloworld_grpc.pb.go
+        ├── calculator.proto
+        ├── calculator.pb.go
+        └── calculator_grpc.pb.go
 ```
 
 ## Features
 
-- Simple gRPC service with a `SayHello` RPC method
+- Calculator service with `Add` and `Subtract` RPC methods
 - Protocol Buffers for service definition
-
+- Client-server communication over TCP
 
 ## Prerequisites
 
@@ -41,13 +41,13 @@ A simple gRPC client-server implementation in Go demonstrating a basic "Hello Wo
 1. Install dependencies for the server:
    ```bash
    cd server
-   go mod tidy
+   go mod download
    ```
 
 2. Install dependencies for the client:
    ```bash
    cd client
-   go mod tidy
+   go mod download
    ```
 
 ## Running the Application
@@ -70,11 +70,7 @@ cd client
 go run main.go
 ```
 
-By default, the client sends a request with the name "world". You can specify a custom name:
-
-```bash
-go run main.go -name="YourName"
-```
+The client performs an addition operation (1 + 1 by default). Modify the `num1` and `num2` variables in `client/main.go` to test with different values.
 
 ## Regenerating Protocol Buffers
 
@@ -84,14 +80,24 @@ If you modify the `.proto` file, regenerate the code:
 cd server/pb
 protoc --go_out=. --go_opt=paths=source_relative \
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-    helloworld.proto
+    calculator.proto
 ```
 
 Then copy the generated files to the client directory:
 
 ```bash
-cp server/pb/helloworld*.go client/pb/
+cp server/pb/calculator*.go client/pb/
 ```
 
+## Service Definition
 
+The service is defined in `calculator.proto`:
 
+- **Service**: `Calculator`
+- **Methods**: `Add`, `Subtract`
+- **Request**: `CalcutorRequest` (contains `num1` and `num2` fields)
+- **Response**: `CalcutorResponse` (contains a `result` field)
+
+## License
+
+This is a learning project.
